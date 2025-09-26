@@ -1,0 +1,106 @@
+'''
+Isabella Alongi
+Dr. Irakliotis
+COMP 271 Sec 001
+September 28, 2025
+Chapter 7,8+ Assignment
+'''
+
+# Starter code for MyList
+
+class MyList:
+    _EMPTY = [] # Empty list
+    _RESIZE_BY = 2
+
+    def __init__(self, maximum_size: int = 4):
+        """Create an empty list with a fixed size block specified by parameter
+        maximum_size. The object tracks how many actual elements are in the list
+        using the attribute __actual_size.
+        """
+        self._maximum_size: int = maximum_size
+        self.__actual_size: int = 0
+        self._data: list = [None] * maximum_size
+
+    def __len__(self) -> int:
+        return self.__actual_size # Returns the correct number of elements
+
+    def __str__(self) -> str:
+        """ Returns a string in the exact format:
+          Elements separated by a comma followed by a space (", ")
+          Enclosed in square brackets with no extra spaces
+
+        Example:
+            If the list contains 1, 2, 3
+            str(list) should return: "[1, 2, 3]"
+        """
+        return "[" + ", ".join(str(self._data[i]) for i in range(self.__actual_size)) + "]"
+
+    def _resize(self):
+        # Creates larger memory with capacity is reached
+        new_size = self._maximum_size * self._RESIZE_BY
+        new_data = [None] * new_size
+        # List elements copied
+        for i in range(self.__actual_size):
+            new_data[i] = self._data[i]
+        self._data = new_data
+        self._maximum_size = new_size
+
+    def append(self, value) -> None:
+        # Add value to end of list, resize if needed.
+        if self.__actual_size == self._maximum_size:
+            self._resize()
+        self._data[self.__actual_size] = value
+        self.__actual_size += 1
+
+    def insert(self, index: int, value) -> None:
+        # Insert value at index, shifting elements right
+        if self.__actual_size == self._maximum_size:
+            self._resize()
+    
+        for i in range(self.__actual_size, index, -1):
+            self._data[i] = self._data[i - 1]
+        
+        self._data[index] = value
+        self.__actual_size += 1
+
+    def remove(self, index: int):
+        # Removes and returns element at index
+        removed_value = self._data[index]
+
+        for i in range(index, self.__actual_size -1):
+            self._data[i] = self._data[i + 1]
+        self._data[self.__actual_size -1] = None
+        self.__actual_size -= 1
+        return removed_value     
+
+    def pop(self):
+        removed_value = self._data[self.__actual_size -1]
+        self._data[self.__actual_size -1] = None
+        self.__actual_size -= 1
+        return removed_value 
+
+
+# --- Simple testing ---
+if __name__ == "__main__":
+    my_list = MyList()
+    # Write tests using this object to verify your methods work correctly.
+
+    # append
+    for i in range(1,11):
+        my_list.append(i)
+        print(my_list)
+
+    # __len__
+    print("Length:", len(my_list))
+
+    # insert
+    my_list.insert(2,77)
+    print(my_list)
+
+    # remove
+    my_list.remove(2)
+    print(my_list)
+
+    # pop
+    my_list.pop() 
+    print(my_list)
